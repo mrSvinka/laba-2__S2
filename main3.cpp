@@ -13,7 +13,7 @@
 #include <queue>
 using namespace std;
 
-struct Node { int x, y, steps; }; //храним координаты
+struct Node { int x, y, steps; }; //храним координаты и  кол-во шагов.
 
 int minSteps(char grid[100][100], int n, int m) 
 {
@@ -36,33 +36,34 @@ int minSteps(char grid[100][100], int n, int m)
             }
         }
     }
-    if (!foundS || !foundE) return -1;
+    if (!foundS || !foundE) return -1; // нет точки, возвращаем -1
 
     //посещенные клетки
     bool visited[100][100] = {false};
-    queue<Node> q;
-    q.push(start);
-    visited[start.x][start.y] = true;
-
+    queue<Node> q; //поиска в ширину
+    q.push(start); //старт
+    visited[start.x][start.y] = true; //стартовали
+//направления движения
     int dx[] = {-1, -1, -1, 0, 0, 1, 1, 1};
     int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
     while (!q.empty()) 
     {
-        Node curr = q.front();
-        q.pop();
+        Node curr = q.front(); //взяли клетку
+        q.pop(); //убрали из очереди на праверку
 
         if (curr.x == end.x && curr.y == end.y)
-            return curr.steps;
+            return curr.steps; //финиш
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) 
+        {   //точка следом
             int nx = curr.x + dx[i];
             int ny = curr.y + dy[i];
-            if (nx >= 0 && nx < n && ny >= 0 && ny < m && 
-                !visited[nx][ny] && grid[nx][ny] != '#') 
+            if (nx >= 0 && nx < n && ny >= 0 && ny < m && //держим себя в рамках
+                !visited[nx][ny] && grid[nx][ny] != '#') //не тыкаемся в стены
                 {
                 visited[nx][ny] = true;
-                q.push({nx, ny, curr.steps + 1});
+                q.push({nx, ny, curr.steps + 1}); //очередь
             }
         }
     }
